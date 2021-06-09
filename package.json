@@ -1,0 +1,7 @@
+{
+  "name": "stockfish-playground",
+  "version": "1.0.0",
+  "repository": "https://github.com/yifan-ca/stockfish-playground.git",
+  "author": "Cristina Silva <crissilva.eng@gmail.com>",
+  "license": "MIT"
+}
