@@ -25,12 +25,23 @@ class ChessEngine {
   }
 }
 
+enum Color {
+  White = 'White',
+  Black = 'Black'
+}
+
+enum Termination {
+  Checkmate = 'Checkmate',
+  Stalemate = 'Stalemate',
+  InsufficientMaterial = 'InsufficientMaterial',
+  ThreefoldRepetition = 'ThreefoldRepetition',
+  FiftyMoves = 'FiftyMoves',
+}
+
 interface Outcome {
-  inCheckmate: boolean
-  inStalemate: boolean
-  inDraw: boolean
-  insufficientMaterial: boolean
-  inThreefoldRepetition: boolean
+  termination: Termination,
+  winner?: Color
+  result: string
 }
 
 class Game {
@@ -57,13 +68,35 @@ class Game {
   }
 
   private outcome(): Outcome {
-    return {
-      inCheckmate: this.chess.in_checkmate(),
-      inStalemate: this.chess.in_stalemate(),
-      inDraw: this.chess.in_draw(),
-      insufficientMaterial: this.chess.insufficient_material(),
-      inThreefoldRepetition: this.chess.in_threefold_repetition()
+    const termination = this.getTermination()
+    const winner = this.getWinner()
+    const result = this.getResult(winner)
+    return { termination, winner, result }
+  }
+
+  private getTermination(): Termination {
+    if (this.chess.in_checkmate()) return Termination.Checkmate
+    if (this.chess.in_stalemate()) return Termination.Stalemate
+    if (this.chess.insufficient_material()) return Termination.InsufficientMaterial
+    if (this.chess.in_threefold_repetition()) return Termination.ThreefoldRepetition
+    return Termination.FiftyMoves
+  }
+
+  private getWinner(): Color | null {
+    if (this.chess.game_over() && !this.chess.in_draw()) {
+      if (this.chess.turn() === 'b') {
+        return Color.White
+      }
+      if (this.chess.turn() === 'w') {
+        return Color.Black
+      }
     }
+  }
+
+  private getResult(winner?: Color): string {
+    if (winner === Color.White) return '1-0'
+    if (winner === Color.Black) return '0-1'
+    return '1/2-1/2'
   }
 }
 
