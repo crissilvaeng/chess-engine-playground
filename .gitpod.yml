@@ -6,4 +6,4 @@ tasks:
 
 github:
   prebuilds:
-    main: true
+    master: true
